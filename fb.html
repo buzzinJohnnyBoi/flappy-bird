@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Flappy Bird</title>
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Goldman:wght@700&display=swap" rel="stylesheet">
+</head>
+<style>
+	* {
+		margin: 0;
+		padding: 0;
+	}
+	.bird {
+	width: 49px;
+	height:34px;
+	position: absolute;
+	z-index: 13;
+	background-image: url(bird1.png);
+    background-size: 100%;
+    transform: rotate(0deg);
+	}
+	body {
+		background-color: black;
+		overflow: hidden;
+	}
+
+	.gamebox {
+	width:530px;
+	height:640px;
+	background-color: rgb(147, 195, 234);
+	overflow: hidden;
+	border: 2px solid white;
+	border-top: none;
+}
+
+.floor {
+	width:950px;
+	height:50px;
+	top: 600px;
+	left: -5px;
+	position: absolute;
+	background-color: 	limegreen;
+	background-image: url(floor.png);
+    background-size: 100%;
+}
+
+button {
+	font-size: 20px;
+	padding: 20px;
+
+}
+
+.pipe {
+	width: 50px;
+	height: 100px;
+	background-color: green;
+	position: absolute;
+}
+
+.block {
+position: absolute;
+left: 532px;
+background-color: black;
+height: 700px;
+width: 3000px;
+top: 0;
+}
+
+.box {
+	font-size: 100px;
+	position: absolute;
+	left: 230px;
+	z-index: 12;
+	font-family: 'Goldman', cursive;
+}
+
+.coin {
+height: 44px;
+width: 44px;
+border: 3px solid black;
+background-color: gold;
+border-radius: 50%;
+position: absolute;
+  transition: transform 1s;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+animation: flip 1s infinite;
+		}
+
+		@keyframes flip {
+			0% {
+				transform: rotateY(180deg);
+			}
+
+				100% {
+				transform: rotateY(0deg);
+			}
+
+		}
+	.hat {
+height: 9px;
+width: 70%;
+background: url(hat1.png);
+background-size: 100%;
+position: absolute;
+left: 15%;
+display: none;
+		}
+
+/*	.hat {
+height: 9px;
+width: 70%;
+background: url(hat2.png);
+background-size: 100%;
+position: absolute;
+top: -2px;
+left: 20%;
+		}*/
+
+		b{
+			font-size: 25px;
+			color: black;
+			position: absolute;
+			top: 50px;
+			z-index: 10000000000000000000000000000000000000001;
+		}
+
+		.menu {
+			font-size: 24px;
+			text-align: center;
+			display: none;
+			margin-left: 132px;
+    		margin-right: 132px;
+    		width: 265px;
+    		position: absolute;
+    		top: 0;
+		}
+	 .h {
+height: 70px;
+width: 40%;
+display: inline-block;
+text-align: center;
+padding: 30px;
+
+	 }
+
+#h1 {
+	display: block;
+}
+
+#h2 {
+	display: block;
+	padding-top: 20px;
+}
+
+</style>
+<body onmousedown ="jump();">
+
+	<div class="gamebox" onclick="start();"><img src="city.png" id = "city1" style="	width:3000px; height:640px; position: absolute; top: -40px;"><div class="box">0</div><div class="bird"><div class="hat"></div></div><b>Coins Collected: 0</b> <div class="pipe"><div class="coin"></div></div> <div class="pipe" id= "pipe2"></div>
+	<div class="pipe" id="pipe3"><div class="coin" id="c1"></div></div> <div class="pipe" id="pipe4"></div>
+
+
+	<div class="floor"></div></div><div class="block"><img src="bird1.png" style="width: 1px; display:none;"><img src="bird2.png" style="width: 1px; display:none;"><img src="bird3.png" style="width: 1px; display:none;"><img src="bird4.png" style="width: 1px; display:none;"><img src="bird5.png" style="width: 1px;"><img src="bird6.png" style="width: 1px;"><img src="bird7.png" style="width: 1px;"><img src="bird8.png" style="width: 1px;"><img src="bird9.png" style="width: 1px;"><img src="bird10.png" style="width: 1px;"><img src="bird11.png" style="width: 1px;"><img src="bird12.png" style="width: 1px;"><img src="Adeadbird.png" style="width: 1px;"></div>
+	<br>
+<button onclick="start();" id="butt1" style="position: absolute; top: 500px; left: 60px;">Start</button>
+<button onclick="birdchange();" id = "b2" style="position: absolute; top: 500px; left: 300px;">Change Bird</button>
+<button onclick="upgrade();" id = "b3" style="position: absolute; top: 500px; left: 160px;">Upgrade</button>
+<button onclick="startover();" style="position: absolute; top: 300px; left: 160px; display: none;" id="b1">Start Over</button>
+	<div class="menu"> Click to buy <br><button onclick="buyhat(1);" id="h1"><img src="hat1.png" style ="width:200px;" ><br>5 Coins</button><br>
+										<button onclick="buyhat(2);" id="h2"><img src="hat2.png" style ="width:200px;" ><br>5 Coins</button></div>
+
+</body>
+<script type="text/javascript">
+	var Random = function(min, max) { return Math.round(Math.random() * (max - min) + min); };
+	var num = 11;
+	var num2 = 3;
+	var bird = document.querySelector(".bird");
+	var pipe = document.querySelector(".pipe");
+	var pipe2 = document.querySelector("#pipe2");
+	var pipe3 = document.querySelector("#pipe3");
+	var pipe4 = document.querySelector("#pipe4");
+	var coin1 = document.querySelector(".coin");
+	var coin2 = document.querySelector("#c1");
+	var dead1 = false;
+	var DIA = true;
+	var run = false;
+	var flap = true;
+	var score = 0;
+	var matoothew = 1;
+	var whichbird = "url(bird"+matoothew+".png)";
+	var oneortwo = 1;
+	var w1w = true;
+	var sdjsdjsk;
+	var coincount = 0;
+	var upgrading = false;
+	var uh1 = false;
+	var uh2 = false;
+
+
+	var fxJump = new Audio();
+	//fxJump.addEventListener("canplaythrough", playSoundHandler, false);
+	fxJump.src = `sound2.wav`;
+	fxJump.volume = 0.5;
+	var fxCoin = new Audio();
+	//fxJump.addEventListener("canplaythrough", playSoundHandler, false);
+	fxCoin.src = `sound4.wav`;
+	fxCoin.volume = 0.5;
+	console.log(matoothew);
+		window.addEventListener('load', () => {
+bird.style.top = Bird.y +"px";
+bird.style.left = Bird.x +"px";
+pipe.style.left = "600px";
+pipe2.style.left = pipe.style.left;
+pipe3.style.left = "900px";
+pipe4.style.left = pipe3.style.left;
+pipe.style.height = Math.floor(Math.random() * 350 + 100) + "px";
+pipe2.style.height = (600 - (parseInt(pipe.style.height) + 120)) + "px";
+pipe3.style.height = Math.floor(Math.random() * 350 + 100) + "px";
+coin1.style.top = (parseInt(pipe.style.height) + 50 + "px");
+coin2.style.top = (parseInt(pipe3.style.height) + 50 + "px");
+pipe4.style.height = (600 - (parseInt(pipe3.style.height) + 120)) + "px";
+pipe2.style.top = (parseInt(pipe.style.height) + 120 + "px");
+pipe4.style.top = (parseInt(pipe3.style.height) + 120 + "px");
+document.querySelector(".floor").style.left = -5 + "px";
+document.querySelector("#city1").style.left = -2 + "px";
+bird.style.backgroundImage = whichbird;
+   });
+	var width = 400;
+
+	var controller = {
+		keydown: false,
+		update: false,
+		keypress: function(e) {
+			var type = (e.type === 'keydown')? true : false;
+			if(e.keyCode == 32) {
+				if (DIA === false) {
+					if(type === true) {
+						if(!controller.update) {
+							controller.keydown = true;
+							controller.update = true;
+						}
+					}
+					else {
+						controller.keydown = false;
+						controller.update = false;
+					}
+				}
+
+				if (DIA === true) {start();}
+				if (DIA == 1) {startover();}
+			}
+		}
+	}
+
+	function playSoundHandler(event) {
+		fxJump.play();
+		fxJump.volume = 0.5;
+		fxJump.loop = true;
+	}
+
+
+	var Bird = {
+	x: width/2,
+	y: 400,
+	xv: 0,
+	yv: 0
+}
+
+
+	window.addEventListener('keydown', controller.keypress);
+	window.addEventListener('keyup', controller.keypress);
+
+					setInterval(update, 25);
+
+function start() {
+	if (DIA === true) {
+			Bird.yv = -10;
+			run = true;
+			document.querySelector("#butt1").style.display = "none";
+			document.querySelector("#b2").style.display = "none";
+			document.querySelector("#b3").style.display = "none";
+			DIA = false;
+			}
+}
+
+function update() {
+	if (run === true) {
+
+	if (parseInt(bird.style.top) > 570) {Bird.y = 580; dead();}
+
+    pipe.style.left = parseInt(pipe.style.left) - 3 + "px";
+    pipe2.style.left =  pipe.style.left;
+    pipe3.style.left = parseInt(pipe3.style.left) -3 + "px";
+    pipe4.style.left =  pipe3.style.left;
+    coin1.style.top = (parseInt(pipe.style.height) + 40 + "px");
+	coin2.style.top = (parseInt(pipe3.style.height) + 40 + "px");
+    document.querySelector(".floor").style.left = parseInt(document.querySelector(".floor").style.left) - 3 + "px";
+    switch(oneortwo) {
+    	case 1:    document.querySelector("#city1").style.left = parseInt(document.querySelector("#city1").style.left) - 1 + "px"; oneortwo = 2; break;
+    	case 2:    oneortwo = 1; break;
+    }
+    if (parseInt(document.querySelector("#city1").style.left) < -1850) {document.querySelector("#city1").style.left = "-5px";}
+
+
+	if (parseInt(pipe3.style.left) == 201 || parseInt(pipe3.style.left) == 202) {
+		score = score + 1; document.querySelector(".box").innerHTML = score; coin2.style.display = "none"; coincount++;
+				fxCoin.loop = false; fxCoin.pause(); fxCoin.currentTime = 0; fxCoin.play();
+	}
+
+	if (parseInt(pipe.style.left) == 201 || parseInt(pipe.style.left) == 202) {
+		score = score + 1;  document.querySelector(".box").innerHTML = score; coin1.style.display = "none"; coincount++;
+		fxCoin.loop = false; fxCoin.pause(); fxCoin.currentTime = 0; fxCoin.play();
+	}
+
+    if (parseInt(pipe.style.left) < -50) {
+    					if (score == 9) {
+		pipe.style.backgroundColor = "blue";
+		pipe2.style.backgroundColor = pipe.style.backgroundColor;
+
+	}
+		coin1.style.display = "block";
+	    					if (score == 19) {
+		pipe.style.backgroundColor = "green";
+		pipe2.style.backgroundColor = pipe.style.backgroundColor;
+	}
+
+		    					if (score == 18) {
+		pipe3.style.backgroundColor = "green";
+		pipe4.style.backgroundColor = pipe.style.backgroundColor;
+	}
+    	pipe.style.left = 550 + "px";
+    	pipe2.style.left =  pipe.style.left;
+        pipe.style.height = Math.floor(Math.random() * 350 + 100) + "px";
+		pipe2.style.top = (parseInt(pipe.style.height) + 120 + "px");
+		pipe2.style.height = (600 - (parseInt(pipe.style.height) + 120)) + "px";
+}
+    if (parseInt(pipe3.style.left) < -50) {
+    	pipe3.style.left = 550 + "px";
+    	pipe4.style.left =  pipe3.style.left;
+        pipe3.style.height = Math.floor(Math.random() * 350 + 100) + "px";
+		pipe4.style.top = (parseInt(pipe3.style.height) + 120 + "px");
+		pipe4.style.height = (600 - (parseInt(pipe3.style.height) + 120)) + "px";
+					if (score == 8) {
+		pipe3.style.backgroundColor = "blue";
+		pipe4.style.backgroundColor = pipe3.style.backgroundColor;
+	}
+		coin2.style.display = "block";
+	}
+
+    if (parseInt(document.querySelector(".floor").style.left) < -416) {
+			document.querySelector(".floor").style.left = -5 + "px";
+	}
+
+	if(controller.keydown) {
+		if (flap === true) {jump();  }
+	}
+	if (w1w === false) {
+		w1w = true;
+		Bird.yv = -10; fxJump.loop = false; fxJump.pause(); fxJump.currentTime = 0; fxJump.play();
+		document.querySelector(".menu").style.display = "none";
+	}
+
+
+	if(Bird.y < 0) { Bird.y = 0;}
+
+	bird.style.top = `${Bird.y}px`;
+	bird.style.left = `${Bird.x}px`;
+
+	Bird.yv += 0.8;
+	Bird.y += Bird.yv;
+
+	document.querySelector("b").innerHTML = "Coins Collected: " + coincount;
+
+	// collision
+
+	if (parseInt(pipe.style.left) == 249) {
+		if (Bird.y < parseInt(pipe.style.height) || Bird.y > parseInt(pipe2.style.top)) {
+			flap = false;
+				bird.style.backgroundImage = "url(Adeadbird.png)";
+		}
+	}
+		if (parseInt(pipe3.style.left) == 249) {
+		if (Bird.y < parseInt(pipe3.style.height) || Bird.y > parseInt(pipe4.style.top)) {
+			flap = false;
+				bird.style.backgroundImage = "url(Adeadbird.png)";
+		}
+	}
+
+		if (parseInt(pipe.style.left) < 249 && parseInt(pipe.style.left) > 150) {
+		if (Bird.y < parseInt(pipe.style.height)) {
+			flap = false;
+				bird.style.backgroundImage = "url(Adeadbird.png)";
+		}
+	}
+	if(Bird.yv < 0) {
+		bird.style.transform = "rotate("+((Bird.yv * 1.5) + 350)+"deg)";
+		sdjsdjsk = Bird.yv * 1.5;
+		Bird.y = Bird.y - sdjsdjsk;
+	}
+
+	if(Bird.yv >= 0) {
+		sdjsdjsk = Bird.yv * 1.5;
+		bird.style.transform = "rotate("+(sdjsdjsk)+"deg)";
+		Bird.y = Bird.y - sdjsdjsk;
+	}
+
+	if (parseInt(pipe.style.left) < 249 && parseInt(pipe.style.left) > 150) {
+				if ((Bird.y + 35) > parseInt(pipe2.style.top)) {
+			flap = false;
+				bird.style.backgroundImage = "url(Adeadbird.png)";
+		}
+	}
+
+	if (parseInt(pipe3.style.left) < 249 && parseInt(pipe3.style.left) > 150) {
+		if (Bird.y < parseInt(pipe3.style.height) || (Bird.y + 30) > parseInt(pipe4.style.top)) {
+			flap = false;
+				bird.style.backgroundImage = "url(Adeadbird.png)";
+		}
+	}
+	if(Bird.yv > 0 || Bird.yv < 0) {
+				Bird.y = Bird.y + sdjsdjsk;
+	}
+
+    controller.keydown = false;
+
+	}
+}
+
+function startover() {
+	coin1.style.display = "block";
+	coin2.style.display = "block";
+	document.querySelector("#city1").style.left = "-2px";
+	bird.style.backgroundImage = whichbird;
+	Bird.x = width/2;
+	Bird.y = 300;
+	Bird.yv = -10;
+	    bird.style.top = `${Bird.y}px`;
+    bird.style.left = `${Bird.x}px`;
+	document.querySelector("#b1").style.display = "none";
+	DIA = true;
+pipe.style.left = "600px";
+pipe2.style.left = pipe.style.left;
+pipe3.style.left = "900px";
+pipe4.style.left = pipe3.style.left;
+pipe.style.height = Math.floor(Math.random() * 350 + 100) + "px";
+pipe2.style.height = (600 - (parseInt(pipe.style.height) + 120)) + "px";
+pipe3.style.height = Math.floor(Math.random() * 350 + 100) + "px";
+pipe4.style.height = (600 - (parseInt(pipe3.style.height) + 120)) + "px";
+pipe2.style.top = (parseInt(pipe.style.height) + 120 + "px");
+pipe4.style.top = (parseInt(pipe3.style.height) + 120 + "px");
+score = 0;
+document.querySelector(".box").innerHTML = score;
+flap = true;
+dead1 = false;
+		pipe.style.backgroundColor = "green";
+		pipe2.style.backgroundColor = pipe.style.backgroundColor;
+		pipe3.style.backgroundColor = pipe.style.backgroundColor;
+		pipe4.style.backgroundColor = pipe.style.backgroundColor;
+		bird.style.transform = "rotate(0deg)";
+		document.querySelector("#butt1").style.display = "block";
+		document.querySelector("#b2").style.display = "block";
+		document.querySelector("#b3").style.display = "block";
+}
+
+function dead() {
+	bird.style.backgroundImage = "url(Adeadbird.png)";
+	run = false;
+	document.querySelector("#b1").style.display = "block";
+	DIA = 1;
+	dead1 = true;
+
+}
+
+
+function birdchange() {
+	 matoothew = matoothew + 1;
+	 if (matoothew == 13) {matoothew = 1;}
+	 whichbird = "url(bird"+matoothew+".png)";
+	 bird.style.backgroundImage = whichbird;
+}
+
+function jump() {
+if (flap === true && run === true) {
+	w1w = false;
+		doneup();
+	document.querySelector("#butt1").style.display = "none";
+	document.querySelector("#b2").style.display = "none";
+	document.querySelector("#b3").innerHTML = "Upgrade";
+}
+else if (dead1 === true){
+	doneup();
+	document.querySelector("#butt1").style.display = "none";
+	document.querySelector("#b2").style.display = "none";
+	document.querySelector("#b3").innerHTML = "Upgrade";
+}
+
+
+}
+
+function upgrade() {
+	if (document.querySelector("#b3").innerHTML == "Done") {
+			doneup();
+	}
+
+		else if (document.querySelector("#b3").innerHTML == "Upgrade") {
+	upgrading = true;
+	document.querySelector(".box").style.display = "none";
+	document.querySelector("b").style.top = "350px";
+	document.querySelector(".menu").style.display = "block";
+	document.querySelector("#butt1").style.display = "none";
+	document.querySelector("#b2").style.display = "none";
+		document.querySelector("#b3").innerHTML = "Done";
+	}
+}
+
+function doneup() {
+	upgrading = false;
+	document.querySelector(".box").style.display = "block";
+	document.querySelector("b").style.top = "50px";
+	document.querySelector(".menu").style.display = "none";
+	document.querySelector("#butt1").style.display = "block";
+	document.querySelector("#b2").style.display = "block";
+	document.querySelector("#b3").innerHTML = "Upgrade";
+}
+
+function buyhat(whichhat) {
+		console.log("sfd");
+	if (upgrading) {
+			if (coincount >= 5 || uh1 === true) {
+		if (whichhat == 1) {
+		document.querySelector(".hat").style.backgroundImage = "url(hat1.png)";
+		document.querySelector(".hat").style.left = "20%";
+		document.querySelector(".hat").style.top = "0px";
+				if (!uh1) {
+		coincount -= 5;
+	}
+		document.querySelector(".hat").style.display = "block";
+		document.querySelector("b").innerHTML = "Coins Collected: " + coincount;
+		uh1 = true;
+		}
+		}
+		if (coincount >= 5 || uh2 === true) {
+		if (whichhat == 2) {
+		document.querySelector(".hat").style.backgroundImage = "url(hat2.png)";
+		document.querySelector(".hat").style.left = "20%";
+		document.querySelector(".hat").style.top = "-2px";
+		if (!uh2) {
+		coincount -= 5;
+	}
+		document.querySelector(".hat").style.display = "block";
+		document.querySelector("b").innerHTML = "Coins Collected: " + coincount;
+		uh2 = true;
+		}
+	}
+
+
+}
+}
+</script>
+</html>
